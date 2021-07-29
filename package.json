@@ -1,0 +1,54 @@
+{
+  "name": "insta-clone",
+  "version": "1.0.0",
+  "description": "Full stack Mern using udemy course",
+  "main": "app.js",
+  "engines": {
+    "node": "14.x",
+    "npm": "6.14.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node app.js",
+    "watch": "webpack --watch",
+    "dev": "nodemon --exec babel-node  app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Duncanwar/Insta-clone.git"
+  },
+  "author": "Duncan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Duncanwar/Insta-clone/issues"
+  },
+  "homepage": "https://github.com/Duncanwar/Insta-clone#readme",
+  "dependencies": {
+    "@babel/cli": "^7.13.14",
+    "@babel/core": "^7.14.6",
+    "@babel/node": "^7.13.13",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/register": "^7.13.14",
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.14",
+    "nodemailer": "^6.4.17",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "nodemon": "^2.0.7",
+    "passport": "^0.4.1",
+    "passport-http-bearer": "^1.0.1",
+    "path": "^0.12.7",
+    "primeflex": "^2.0.0",
+    "primeicons": "^4.1.0",
+    "primereact": "^6.2.1",
+    "socket.io": "^2.2.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}
