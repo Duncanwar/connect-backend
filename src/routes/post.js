@@ -55,6 +55,7 @@ router.put("/unlike", requiredLogin, (req, res) => {
 });
 
 router.put("/like", requiredLogin, (req, res) => {
+  console.log(req.body.postId);
   Post.findByIdAndUpdate(
     req.body.postId,
     {

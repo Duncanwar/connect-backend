@@ -10,55 +10,34 @@ const nodemailer = require('nodemailer')
 const sendgridTransport = require('nodemailer-sendgrid-transport')
 require('dotenv').config()
 
-const transporter = nodemailer.createTransport(sendgridTransport({
-    auth: {
-      api_key: process.env.SENDGRID_API_KEY
-    }
-}))
+// const transporter = nodemailer.createTransport(sendgridTransport({
+//     auth: {
+//       api_key: process.env.SENDGRID_API_KEY
+//     }
+// }))
 
 router.get('/protected',requireLogin,(req,res)=>{
     res.send('hello user');
 })
 
-router.post('/signup',(req,res)=>{
+router.post('/signup', async (req,res)=>{
 const {name,email,password,pic} = req.body;
 if(!email||!password||!name){
     return res.status(422).json({error:"please add all fields"});
 }
-User.findOne({email:email})
-.then((savedUser)=>{
-    if(savedUser){
-        return res.status(422).json({error:"user already exusts with that email"})
-    }
-    bcrypt.hash(password,12)
-    .then(hashedpassword=>{
-        const user = new User({
+    const userExist = await User.findOne({ email: email })
+    if (userExist)
+    return res.status(422).json({ error: "user already exists with that email" });
+      
+    const hashedPassword = await bcrypt.hash(password, 12)
+          const user = new User({
             email,
-            password:hashedpassword,
+            password: hashedPassword,
             name,
-            photo:pic
-        })
-        user.save()
-        .then(user=>{
-            // const io = req.app.get('io');
-            // console.log(io, user)
-            // io.emit('newUserAdded', user)
-            // transporter.sendMail({  
-            //     to: email,
-            //     from: process.env.EMAIL_SENDER,
-            //     subject: "Signup",
-            //     html: "<h1>Welcome to instagram </h1>"
-            // })
-            res.json({message:"saved successfully"})
-        })
-        .catch(err=>{
-            console.log(err)
-        })
-    })
-})
-.catch(err=>{
-    console.log(err)
-})
+            photo: pic,
+          });
+     const us  =   await user.save();
+              res.json({ message: "saved successfully" });
 
 })
 

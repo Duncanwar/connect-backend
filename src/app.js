@@ -3,13 +3,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { devDb } = require("./config/dbConfig");
+require("./config/dbConfig");
 const routes = require("./routes/index.route");
 const socketIO = require("socket.io");
 const http = require("http");
-require("./cacheManager");
+// require("./cacheManager");
 
-devDb();
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

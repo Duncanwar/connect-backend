@@ -3,16 +3,14 @@ require("dotenv").config();
 
 const dbUrl = process.env.MONGOURI;
 
-exports.devDb = async () => {
-  try {
-    return await mongoose.connect(dbUrl, {
+ mongoose.connect(dbUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
       useFindAndModify: false,
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
+ });
+ 
+const db = mongoose.connection
+db.on('error', console.error.bind(console,"Mongodb Connection error"))
   // mFpYrfJU42u2tJwu
-};
+
