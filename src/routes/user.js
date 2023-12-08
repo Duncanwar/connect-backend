@@ -116,7 +116,9 @@ router.post("/search-users", (req, res) => {
     });
 });
 
-router.get("/allUsers", requireLogin, (req, res) => {
+router.get("/allUsers",
+//  requireLogin, 
+(req, res) => {
   User.find()
     .then((user) => {
       console.log(user);

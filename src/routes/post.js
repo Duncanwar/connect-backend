@@ -7,7 +7,7 @@ const postControllers = require("../controllers/post.controller");
 
 const { getAll, createPost } = postControllers;
 
-router.get("/allpost", requiredLogin, getAll);
+router.get("/allpost",  getAll);
 
 router.get("/followingpost", requiredLogin, (req, res) => {
   Post.find({ postedBy: { $in: req.user.following } })

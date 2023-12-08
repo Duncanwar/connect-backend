@@ -22,12 +22,13 @@ router.get('/protected',requireLogin,(req,res)=>{
 
 router.post('/signup', async (req,res)=>{
 const {name,email,password,pic} = req.body;
+console.log(name,email,password)
 if(!email||!password||!name){
-    return res.status(422).json({error:"please add all fields"});
+    return res.status(422).json({message:"please add all fields"});
 }
     const userExist = await User.findOne({ email: email })
     if (userExist)
-    return res.status(422).json({ error: "user already exists with that email" });
+    return res.status(422).json({ message: "user already exists with that email" });
       
     const hashedPassword = await bcrypt.hash(password, 12)
           const user = new User({
