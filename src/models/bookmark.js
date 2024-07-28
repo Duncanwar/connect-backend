@@ -6,6 +6,7 @@ const bookmarkSchema = new mongoose.Schema({
         type: ObjectId,
         required: true,
         ref:"Post"
+        
     },
     bookmarkedBy:{type:ObjectId
     ,ref:"user"}
