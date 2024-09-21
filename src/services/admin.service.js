@@ -12,5 +12,4 @@ export default class AdminService {
   static async findOneByUsername(username) {
     return adminSchema.findOne({ username: username });
   }
-  //  static
 }
