@@ -3,8 +3,8 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const requireLogin = require("../middleware/requireLogin");
 const requiredLogin = require("../middleware/requireLogin");
-const Post = require("../models/post");
-const User = require("../models/user");
+const Post = require("../../models/post");
+const User = require("../../models/user");
 const admin = require("../middleware/admin.middleware");
 const userController = require("../controllers/user.controller");
 
@@ -116,18 +116,20 @@ router.post("/search-users", (req, res) => {
     });
 });
 
-router.get("/allUsers",
-//  requireLogin, 
-(req, res) => {
-  User.find()
-    .then((user) => {
-      console.log(user);
-      res.json({ user });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+router.get(
+  "/allUsers",
+  //  requireLogin,
+  (req, res) => {
+    User.find()
+      .then((user) => {
+        console.log(user);
+        res.json({ user });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+);
 
 //router.delete('/user', [checkPassword,checkEmail,requireLogin], deleteUser)
 

@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const requiredLogin = require("../middleware/requireLogin");
-const Post = require("../models/post");
+const Post = require("../../models/post");
 
 const postControllers = require("../controllers/post.controller");
 
 const { getAll, createPost } = postControllers;
 
-router.get("/allpost",  getAll);
+router.get("/allpost", getAll);
 
 router.get("/followingpost", requiredLogin, (req, res) => {
   Post.find({ postedBy: { $in: req.user.following } })
