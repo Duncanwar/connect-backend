@@ -1,15 +1,13 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
 const cors = require("cors");
-require("./config/dbConfig");
-const routes = require("./routes/index.route");
+require("./v1/config/dbConfig");
+const routes = require("./v1/config/routes/index.route");
 const socketIO = require("socket.io");
 const http = require("http");
 // require("./cacheManager");
-
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
