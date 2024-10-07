@@ -2,18 +2,18 @@
   "name": "insta-clone",
   "version": "1.0.0",
   "description": "Full stack Mern using udemy course",
-  "main": "app.js",
+  "main": "index.js",
   "engines": {
     "node": "14.x",
     "npm": "6.14.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node src/app.js",
+    "start": "babel-node src/index.js",
     "prestart": "npm run build",
     "build": "rimraf dist && babel src -d dist",
     "watch": "webpack --watch",
-    "dev": "nodemon --exec babel-node src/app.js"
+    "dev": "nodemon --exec babel-node src/index.js"
   },
   "repository": {
     "type": "git",
