@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const requiredLogin = require("../../../middleware/requireLogin");
+
 const Post = require("../../models/post");
+const postControllers = require("../controllers/postController");
+const requiredLogin = require("../../../middleware/requireLogin");
 
-const postControllers = require("../../../controllers/post.controller");
+router.get("/", postControllers.getAllPosts);
 
-const { getAll, createPost } = postControllers;
+router.post("/", requiredLogin, postControllers.createNewPost);
 
-router.get("/allpost", getAll);
+router.delete("/:postId", requiredLogin, postControllers.deleteOnePost);
 
 router.get("/followingpost", requiredLogin, (req, res) => {
   Post.find({ postedBy: { $in: req.user.following } })
@@ -19,8 +21,6 @@ router.get("/followingpost", requiredLogin, (req, res) => {
     })
     .catch((err) => console.log(err));
 });
-
-router.post("/createpost", requiredLogin, createPost);
 
 router.get("/myposts", requiredLogin, (req, res) => {
   Post.find({ postedBy: req.user._id })
@@ -94,26 +94,6 @@ router.put("/comment", requiredLogin, (req, res) => {
         return res.status(422).json({ error: err });
       } else {
         res.json(result);
-      }
-    });
-});
-
-router.delete("/deletepost/:postId", requiredLogin, (req, res) => {
-  Post.findOne({ _id: req.params.postId })
-    .populate("postedBy", "_id")
-    .exec((err, post) => {
-      if (err || !post) {
-        return res.status(422).json({ error: err });
-      }
-      if (post.postedBy._id.toString() === req.user._id.toString()) {
-        post
-          .remove()
-          .then((result) => {
-            res.json(result);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
       }
     });
 });
