@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const requireLogin = require("../../../middleware/requireLogin");
-const requiredLogin = require("../../../middleware/requireLogin");
+const requiredLogin = require("../middleware/requireLogin");
 const Post = require("../../models/post");
-const User = require("../../models/user");
+const User = require("../models/user");
 const admin = require("../../../middleware/admin.middleware");
 const userController = require("../../../controllers/user.controller");
 

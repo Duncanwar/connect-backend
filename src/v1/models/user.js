@@ -5,10 +5,14 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    trim: true, // Removes leading and trailing spaces
   },
   email: {
     type: String,
     required: true,
+    unique: true, // Ensures email uniqueness
+    trim: true,
+    lowercase: true, // Saves email in lowercase to avoid case-sensitive issues
   },
   resetToken: String,
   expireToken: Date,
@@ -25,4 +29,6 @@ const userSchema = new mongoose.Schema({
   following: [{ type: ObjectId, ref: "user" }],
 });
 
-module.exports = mongoose.model("user", userSchema);
+// Create and export the User model
+const User = mongoose.model("User", userSchema);
+module.exports = User;

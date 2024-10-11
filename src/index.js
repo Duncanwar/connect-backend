@@ -4,7 +4,7 @@ const express = require("express");
 const http = require("http");
 
 const app = express();
-// require("./v1/config/dbConfig");
+require("./v1/config/dbConfig");
 
 const PORT = process.env.PORT || 8000;
 const socketIO = require("socket.io");
