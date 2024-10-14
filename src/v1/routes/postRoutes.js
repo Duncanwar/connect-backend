@@ -3,7 +3,7 @@ const router = express.Router();
 
 const Post = require("../../models/post");
 const postControllers = require("../controllers/postController");
-const requiredLogin = require("../../../middleware/requireLogin");
+const requiredLogin = require("../middleware/requireLogin");
 
 router.get("/", postControllers.getAllPosts);
 

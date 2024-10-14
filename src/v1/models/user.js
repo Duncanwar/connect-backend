@@ -25,10 +25,8 @@ const userSchema = new mongoose.Schema({
     default:
       "https://res.cloudinary.com/semugeshi/image/upload/v1590387633/sample.jpg",
   },
-  followers: [{ type: ObjectId, ref: "user" }],
-  following: [{ type: ObjectId, ref: "user" }],
+  followers: [{ type: ObjectId, ref: "User" }],
+  following: [{ type: ObjectId, ref: "User" }],
 });
 
-// Create and export the User model
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+mongoose.model("User", userSchema);

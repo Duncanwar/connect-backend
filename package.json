@@ -55,5 +55,8 @@
     "util": "^0.12.4",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.11.97"
   }
 }
