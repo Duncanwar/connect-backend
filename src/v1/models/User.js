@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const { ObjectId } = mongoose.Schema.Types;
 
 const userSchema = new mongoose.Schema({
@@ -29,4 +30,4 @@ const userSchema = new mongoose.Schema({
   following: [{ type: ObjectId, ref: "User" }],
 });
 
-mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);

@@ -1,14 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
-const User = require("../../models/user");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const requireLogin = require("../../../middleware/requireLogin");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 require("dotenv").config();
+
+const requireLogin = require("../middleware/requireLogin");
+const post = require("../models/post");
+const User = require("../models/User");
+
+const userController = require("../controllers/userController");
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -22,28 +25,7 @@ router.get("/protected", requireLogin, (req, res) => {
   res.send("hello user");
 });
 
-router.post("/signup", async (req, res) => {
-  const { name, email, password, pic } = req.body;
-  console.log(name, email, password);
-  if (!email || !password || !name) {
-    return res.status(422).json({ message: "please add all fields" });
-  }
-  const userExist = await User.findOne({ email: email });
-  if (userExist)
-    return res
-      .status(422)
-      .json({ message: "user already exists with that email" });
-
-  const hashedPassword = await bcrypt.hash(password, 12);
-  const user = new User({
-    email,
-    password: hashedPassword,
-    name,
-    photo: pic,
-  });
-  const us = await user.save();
-  res.json({ message: "saved successfully" });
-});
+router.post("/signup", userController.createNewUser);
 
 router.post("/login", (req, res) => {
   const { email, password, pic } = req.body;
