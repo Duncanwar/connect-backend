@@ -14,17 +14,14 @@ const createNewUser = async (req, res) => {
       .json({ message: "user already exists with that email" });
 
   const hashedPassword = await bcrypt.hash(password, 12);
-  console.log("passed");
 
-  const user = await userService.createNewUser({
+  await userService.createNewUser({
     name,
     email,
-    hashedPassword,
-    pic,
+    password: hashedPassword,
+    photo: pic,
   });
-  console.log("done");
-  // await user.save();
-  return res.json({ message: "saved successfully" });
+  return res.status(201).json({ message: "saved successfully" });
 };
 
 module.exports = {
