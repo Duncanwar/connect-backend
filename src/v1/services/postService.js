@@ -4,7 +4,7 @@ const createNewPost = async (post) => {
   return await PostModel.create(post);
 };
 
-const getAllPost = async () => {
+const getAllPosts = async () => {
   return await PostModel.find()
     .populate("postedBy", "_id name")
     .populate("comments.postedBy", "_id name")
@@ -13,5 +13,5 @@ const getAllPost = async () => {
 
 module.exports = {
   createNewPost,
-  getAllPost,
+  getAllPosts,
 };

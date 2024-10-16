@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
+const crypto = require("crypto");
 
 const { errorResponse, successResponse } = require("../utils/responses");
 const {
@@ -38,10 +39,9 @@ const login = async (req, res) => {
   }
   try {
     const user = await userService.getOneUser({ email: email });
-    if (!user) return errorResponse(res, unprocessableEntity, authError);
-    const isPasswordValid = comparePassword(password, user.password);
-    if (!isPasswordValid)
+    if (!user || comparePassword(password, user.password))
       return errorResponse(res, unprocessableEntity, authError);
+
     const token = generateToken(user);
     return successResponse(
       res,
@@ -97,12 +97,10 @@ const resetPassword = async (req, res) => {
     return errorResponse(res, unprocessableEntity, missingFields);
 
   try {
-    const buffer = await crypto.randomBytes(32);
-    const token = buffer.toString("hex");
-
     const user = await userService.getOneUser({ email: email });
     if (!user) return errorResponse(res, unprocessableEntity, emailAssociate);
 
+    const token = crypto.randomBytes(32).toString("hex");
     user.resetToken = token;
     user.expireToken = Date.now() + 3600000;
     await userService.updateOneUser(user);
@@ -116,7 +114,12 @@ const resetPassword = async (req, res) => {
             <h5>click in this <a href="${process.env.FRONT_END_URL}/reset/${token}">link</a> to reset password</h5>
             `,
     });
-    res.json({ message: "check your email for password reset link" });
+    return successResponse(
+      res,
+      ok,
+      null,
+      "Check your email for password reset link."
+    );
   } catch (error) {
     console.log(error);
     return errorResponse(res, serverError, "Internal Server Error");
@@ -141,10 +144,10 @@ const signup = async (req, res) => {
       photo: pic,
     });
 
-    return successResponse(res, created, null, signedup, null);
+    return successResponse(res, created, null, signedup);
   } catch (error) {
     console.error(error);
-    return errorResponse(res, serverError, "Internal Server Error");
+    return errorResponse(res, serverError, "Signup failed. Please try again.");
   }
 };
 

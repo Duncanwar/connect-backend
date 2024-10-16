@@ -2,16 +2,26 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const comparePassword = (inputPassword, storedPassword) => {
-  return bcrypt.compare(inputPassword, storedPassword);
+const comparePassword = async (inputPassword, storedPassword) => {
+  try {
+    return await bcrypt.compare(inputPassword, storedPassword);
+  } catch (error) {
+    console.error("Error comparing password", error);
+    throw new Error("Password comparison failed");
+  }
 };
 
-const generateToken = (user) => {
-  return jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+const generateToken = (user, expiresIn = "1h") => {
+  return jwt.sign({ _id: user._id }, process.env.JWT_SECRET), { expiresIn };
 };
 
-const hashPassword = (password) => {
-  return bcrypt.hashSync(password, 15);
+const hashPassword = async (password) => {
+  try {
+    return bcrypt.hashSync(password, 15);
+  } catch (error) {
+    console.error("Error hashing password", error);
+    throw new Error("Password hashing failed");
+  }
 };
 
 const validateRequiredFields = (fields) => {
