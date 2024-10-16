@@ -2,16 +2,13 @@ const express = require("express");
 const router = express.Router();
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 require("dotenv").config();
 
+const authController = require("../controllers/authController");
 const requireLogin = require("../middleware/requireLogin");
-const post = require("../models/post");
 const User = require("../models/User");
-
-const userController = require("../controllers/userController");
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -25,40 +22,9 @@ router.get("/protected", requireLogin, (req, res) => {
   res.send("hello user");
 });
 
-router.post("/signup", userController.createNewUser);
+router.post("/signup", authController.signup);
 
-router.post("/login", (req, res) => {
-  const { email, password, pic } = req.body;
-  if (!email || !password) {
-    return res.status(422).json({ error: "please add email or password" });
-  }
-  User.findOne({ email: email }).then((savedUser) => {
-    if (!savedUser) {
-      return res.status(422).json({ error: "Invalid Email or password" });
-    }
-    bcrypt
-      .compare(password, savedUser.password)
-      .then((doMatch) => {
-        if (doMatch) {
-          const token = jwt.sign(
-            { _id: savedUser._id },
-            process.env.JWT_SECRET
-          );
-          const { _id, name, email, followers, following, photo } = savedUser;
-          return res.json({
-            token,
-            user: { _id, name, email, followers, following, photo },
-            message: "successfully signed in",
-          });
-        } else {
-          return res.status(422).json({ error: "Invalid Email or password" });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
-});
+router.post("/login", authController.login);
 
 router.post("/reset-password", (req, res) => {
   crypto.randomBytes(32, (err, buffer) => {
