@@ -53,6 +53,7 @@ const retrieveResponse = (res, code, data = null) => {
     data,
   });
 };
+
 module.exports = {
   successResponse,
   errorResponse,

@@ -2,7 +2,7 @@ module.exports = {
   signedup: "You signed up successfully",
   duplicateEmail: "This account with this email already exist",
   logout: "You loged out successfully",
-  loged: "You arleady Logged Out",
+  loged: "You aleady Logged Out",
   login: "Please Login",
   duplicateUsername: "This Username is in use",
   emailConfirmation: "A verification email has been sent to ",
@@ -19,8 +19,6 @@ module.exports = {
   onUpdate: "Request updated!",
   onDelete: "Request deleted",
   emailExist: "User already exists with that email",
-  signup: "You have signed up on connect",
   missingFields: "please add email or password",
   authError: "Invalid Email or password",
-  log,
 };

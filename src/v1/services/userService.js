@@ -8,12 +8,17 @@ const deleteOneUser = async (id) => {
   return await UserModel.findByIdAndDelete(id);
 };
 
-const getOneUser = async (email) => {
-  return UserModel.findOne({ email: email });
+const getOneUser = async (data) => {
+  return UserModel.findOne(data);
+};
+
+const updateOneUser = async (...userData) => {
+  return UserModel.save(userData);
 };
 
 module.exports = {
   createNewUser,
   deleteOneUser,
   getOneUser,
+  updateOneUser,
 };
