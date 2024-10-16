@@ -1,11 +1,11 @@
-const PostSchema = require("../models/post");
+const PostModel = require("../models/post");
 
 const createNewPost = async (post) => {
-  return await PostSchema.create(post);
+  return await PostModel.create(post);
 };
 
 const getAllPost = async () => {
-  return await PostSchema.find()
+  return await PostModel.find()
     .populate("postedBy", "_id name")
     .populate("comments.postedBy", "_id name")
     .sort("-createdAt");

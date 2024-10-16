@@ -14,8 +14,13 @@ const hashPassword = (password) => {
   return bcrypt.hashSync(password, 15);
 };
 
+const validateRequiredFields = (fields) => {
+  return fields.every((field) => !!field);
+};
+
 module.exports = {
   comparePassword,
   generateToken,
   hashPassword,
+  validateRequiredFields,
 };

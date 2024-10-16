@@ -1,7 +1,7 @@
 {
-  "name": "insta-clone",
+  "name": "connect-backend",
   "version": "1.0.0",
-  "description": "Full stack Mern using udemy course",
+  "description": "It is a social media created while learning",
   "main": "index.js",
   "engines": {
     "node": "14.x",
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "babel-node src/index.js",
+    "start": "node dist/src/index.js",
     "prestart": "npm run build",
     "build": "rimraf dist && babel src -d dist",
     "watch": "webpack --watch",
@@ -26,13 +26,7 @@
   },
   "homepage": "https://github.com/Duncanwar/Insta-clone#readme",
   "dependencies": {
-    "@babel/cli": "^7.13.14",
-    "@babel/core": "^7.14.6",
-    "@babel/node": "^7.13.13",
-    "@babel/preset-env": "^7.13.12",
-    "@babel/register": "^7.13.14",
     "bcrypt": "^5.0.1",
-    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -42,21 +36,20 @@
     "mongoose": "^5.9.14",
     "nodemailer": "^6.4.17",
     "nodemailer-sendgrid-transport": "^0.2.0",
-    "nodemon": "^2.0.20",
     "passport": "^0.4.1",
     "passport-http-bearer": "^1.0.1",
     "path": "^0.12.7",
-    "primeflex": "^2.0.0",
-    "primeicons": "^4.1.0",
-    "primereact": "^6.2.1",
     "redis": "^3.1.2",
-    "rimraff": "0.0.1-security",
-    "socket.io": "^2.2.0",
-    "util": "^0.12.4",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "@types/mongoose": "^5.11.97"
+    "@babel/cli": "^7.13.14",
+    "@babel/core": "^7.14.6",
+    "@babel/node": "^7.13.13",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/register": "^7.13.14",
+    "@types/mongoose": "^5.11.97",
+    "nodemon": "^2.0.20",
+    "rimraff": "0.0.1-security"
   }
 }

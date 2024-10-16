@@ -1,15 +1,25 @@
-const postService = require("../services/post.service");
+const postService = require("../services/postService");
 const Post = require("../models/post");
+const { validateRequiredFields } = require("../utils/helpers");
+const { errorResponse, successResponse } = require("../utils/responses");
+const { unprocessableEntity, serverError } = require("../utils/statusCode");
 
 const createNewPost = async (req, res) => {
   const { title, body, pic } = req.body;
-  let post = { photo: pic, postedBy: req.user, ...req.body };
-  if (!title || !body || !pic) {
-    return res.status(422).json({ error: "Please add all the fields" });
+  if (!validateRequiredFields([body, title, pic]))
+    return errorResponse(res, unprocessableEntity);
+  try {
+    const post = await postService.createNewPost({
+      photo: pic,
+      postedBy: req.user,
+      ...req.body,
+    });
+    req.user.password = undefined;
+    return successResponse(res, 201, undefined, "Created New Post", post);
+  } catch (error) {
+    console.error(error);
+    return errorResponse(res, serverError, error);
   }
-  post = await postService.createNewPost(post);
-  req.user.password = undefined;
-  return res.json({ post });
 };
 
 const deleteOnePost = async (req, res) => {

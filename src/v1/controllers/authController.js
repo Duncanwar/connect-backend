@@ -6,6 +6,7 @@ const {
   hashPassword,
   comparePassword,
   generateToken,
+  validateRequiredFields,
 } = require("../utils/helpers");
 const userService = require("../services/userService");
 const {
@@ -29,10 +30,6 @@ const transporter = nodemailer.createTransport(
     },
   })
 );
-
-const validateRequiredFields = (fields) => {
-  return fields.every((field) => !!field);
-};
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -74,14 +71,16 @@ const newPassword = async (req, res) => {
       resetToken: sentToken,
       expireToken: { $gt: Date.now() },
     });
+
     if (!user)
       return errorResponse(
         res,
         unprocessableEntity,
         "Session expired. Try again session expired"
       );
-    const passwordHash = hashPassword(newPassword);
-    user.password = passwordHash;
+
+    const hashedPassword = hashPassword(newPassword);
+    user.password = hashedPassword;
     user.resetToken = undefined;
     user.expireToken = undefined;
     await userService.updateOneUser(user);
@@ -92,16 +91,20 @@ const newPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!validateRequiredFields([email]))
+    return errorResponse(res, unprocessableEntity, missingFields);
+
   try {
     const buffer = await crypto.randomBytes(32);
     const token = buffer.toString("hex");
 
-    const user = await userService.getOneUser({ email: req.body.email });
+    const user = await userService.getOneUser({ email: email });
     if (!user) return errorResponse(res, unprocessableEntity, emailAssociate);
 
     user.resetToken = token;
     user.expireToken = Date.now() + 3600000;
-
     await userService.updateOneUser(user);
 
     await transporter.sendMail({
@@ -116,27 +119,33 @@ const resetPassword = async (req, res) => {
     res.json({ message: "check your email for password reset link" });
   } catch (error) {
     console.log(error);
-    errorResponse(res, serverError, "Internal Server Error");
+    return errorResponse(res, serverError, "Internal Server Error");
   }
 };
 
 const signup = async (req, res) => {
   const { name, email, password, pic } = req.body;
-  if (!email || !password || !name) {
-    return res.status(422).json({ message: "please add all fields" });
+
+  if (!validateRequiredFields([email]))
+    return errorResponse(res, unprocessableEntity, missingFields);
+
+  try {
+    const userExists = await userService.getOneUser({ email: email });
+    if (userExists) return errorResponse(res, unprocessableEntity, emailExist);
+
+    const hashedPassword = hashPassword(password);
+    await userService.createNewUser({
+      name,
+      email,
+      password: hashedPassword,
+      photo: pic,
+    });
+
+    return successResponse(res, created, null, signedup, null);
+  } catch (error) {
+    console.error(error);
+    return errorResponse(res, serverError, "Internal Server Error");
   }
-  const userExist = await userService.getOneUser({ email: email });
-  if (userExist) return errorResponse(res, unprocessableEntity, emailExist);
-
-  const hashedPassword = hashPassword(password);
-
-  await userService.createNewUser({
-    name,
-    email,
-    password: hashedPassword,
-    photo: pic,
-  });
-  return successResponse(res, created, null, signedup, null);
 };
 
 module.exports = {

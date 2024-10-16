@@ -19,6 +19,6 @@ module.exports = {
   onUpdate: "Request updated!",
   onDelete: "Request deleted",
   emailExist: "User already exists with that email",
-  missingFields: "please add email or password",
+  missingFields: "Please Fill on all the fields",
   authError: "Invalid Email or password",
 };
