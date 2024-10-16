@@ -9,11 +9,11 @@ const deleteOneUser = async (id) => {
 };
 
 const getOneUser = async (data) => {
-  return UserModel.findOne(data);
+  return await UserModel.findOne(data);
 };
 
 const updateOneUser = async (...userData) => {
-  return UserModel.save(userData);
+  return await UserModel.save(userData);
 };
 
 module.exports = {

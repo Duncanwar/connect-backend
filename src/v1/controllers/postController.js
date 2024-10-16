@@ -2,12 +2,14 @@ const postService = require("../services/postService");
 const Post = require("../models/post");
 const { validateRequiredFields } = require("../utils/helpers");
 const { errorResponse, successResponse } = require("../utils/responses");
-const { unprocessableEntity, serverError } = require("../utils/statusCode");
+const { unprocessableEntity, serverError, ok } = require("../utils/statusCode");
+const { missingFields } = require("../utils/customMessage");
 
 const createNewPost = async (req, res) => {
   const { title, body, pic } = req.body;
   if (!validateRequiredFields([body, title, pic]))
-    return errorResponse(res, unprocessableEntity);
+    return errorResponse(res, unprocessableEntity, missingFields);
+  console.log(title, "here");
   try {
     const post = await postService.createNewPost({
       photo: pic,
@@ -15,6 +17,7 @@ const createNewPost = async (req, res) => {
       ...req.body,
     });
     req.user.password = undefined;
+
     return successResponse(res, 201, undefined, "Created New Post", post);
   } catch (error) {
     console.error(error);
@@ -23,29 +26,30 @@ const createNewPost = async (req, res) => {
 };
 
 const deleteOnePost = async (req, res) => {
-  Post.findOne({ _id: req.params.postId })
-    .populate("postedBy", "_id")
-    .exec((err, post) => {
-      if (err || !post) {
-        return res.status(422).json({ error: err });
-      }
-      if (post.postedBy._id.toString() === req.user._id.toString()) {
-        post
-          .remove()
-          .then((result) => {
-            res.json(result);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    });
+  const { postId } = req.params;
+
+  if (!validateRequiredFields([postId]))
+    return errorResponse(res, unprocessableEntity, missingFields);
+
+  try {
+    const result = await postService.deleteOnePost(postId, req.user._id);
+    if (!result)
+      return errorResponse(
+        res,
+        unprocessableEntity,
+        "the post is not available"
+      );
+    return successResponse(res, ok, null, "deleted post", result);
+  } catch {
+    console.error("Error deleting post:", error);
+    return errorResponse(res, serverError, "Internal Server Error");
+  }
 };
 
 const getAllPosts = async (req, res) => {
   try {
-    const posts = await postService.getAllPost();
-    return res.json({ posts });
+    const allPosts = await postService.getAllPosts();
+    return successResponse(res, ok, undefined, "Retrieved all posts", allPosts);
   } catch (err) {
     console.log(err);
   }

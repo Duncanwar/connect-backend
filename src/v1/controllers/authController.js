@@ -23,6 +23,7 @@ const {
   authError,
   emailAssociate,
 } = require("../utils/customMessage");
+const { console } = require("inspector");
 
 const transporter = nodemailer.createTransport(
   sendgridTransport({
@@ -34,12 +35,14 @@ const transporter = nodemailer.createTransport(
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  if (!validateRequiredFields([email, password])) {
+
+  if (!validateRequiredFields([email, password]))
     return errorResponse(res, unprocessableEntity, missingFields);
-  }
+
   try {
     const user = await userService.getOneUser({ email: email });
-    if (!user || comparePassword(password, user.password))
+
+    if (!user || !comparePassword(password, user.password))
       return errorResponse(res, unprocessableEntity, authError);
 
     const token = generateToken(user);
