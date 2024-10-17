@@ -4,21 +4,8 @@ const createNewPost = async (post) => {
   return await PostModel.create(post);
 };
 
-const deleteOnePost = async (post, userId) => {
-  try {
-    const onePost = await PostModel.findOne(post).populate("postedBy", "_id");
-
-    if (!onePost) return { error: "Post not found", status: 404 };
-
-    if (onePost.postedBy._id.toString() !== userId.toString())
-      return { error: "Unauthorized action", status: 403 };
-
-    const result = await onePost.remove();
-    return result;
-  } catch (error) {
-    console.error("Error in deletePostById:", error);
-    throw new Error("Internal Server Error");
-  }
+const deleteOnePost = async (post) => {
+  return PostModel.deleteOne(post);
 };
 
 const getAllPosts = async (page = 1, limit = 10) => {
@@ -27,28 +14,60 @@ const getAllPosts = async (page = 1, limit = 10) => {
     .populate("comments.postedBy", "_id name")
     .sort("-createdAt")
     .skip((page - 1) * limit)
-    .limit(limit);
+    .limit(limit)
+    .lean();
+};
+
+const getAllFollowingPost = async (condition) => {
+  return await PostModel.find(condition)
+    .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "_id name")
+    .sort("-createdAt");
+};
+
+const getMyPosts = async (condition) => {
+  return await PostModel.find(condition).populate("PostedBy", "_id name photo");
+};
+
+const getOnePost = async (post) => {
+  return await PostModel.findOne(post).populate("postedBy", "_id");
+};
+
+const updateOnePostLike = async (postId, userId) => {
+  return await PostModel.findByIdAndUpdate(
+    postId,
+    {
+      $push: { likes: userId },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "_id name");
+};
+
+const updateOnePostUnLike = async (postId, userId) => {
+  return await PostModel.findByIdAndUpdate(
+    postId,
+    {
+      $pull: { likes: userId },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("postedBy", "_id name")
+    .populate("comments.postedBy", "_id name");
 };
 
 module.exports = {
   createNewPost,
   deleteOnePost,
   getAllPosts,
+  getAllFollowingPost,
+  getMyPosts,
+  getOnePost,
+  updateOnePostLike,
+  updateOnePostUnLike,
 };
-// return await PostModel.findOne({ _id: req.params.postId })
-//   .populate("postedBy", "_id")
-//   .exec((err, post) => {
-//     if (err || !post) {
-//       return res.status(422).json({ error: err });
-//     }
-//     if (post.postedBy._id.toString() === req.user._id.toString()) {
-//       post
-//         .remove()
-//         .then((result) => {
-//           res.json(result);
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//         });
-//     }
-//   });

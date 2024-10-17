@@ -11,7 +11,7 @@ const comparePassword = async (inputPassword, storedPassword) => {
   }
 };
 
-const generateToken = (user, expiresIn = "1h") => {
+const generateToken = (user, expiresIn = "8h") => {
   return jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn });
 };
 

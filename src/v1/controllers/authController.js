@@ -46,13 +46,9 @@ const login = async (req, res) => {
       return errorResponse(res, unprocessableEntity, authError);
 
     const token = generateToken(user);
-    return successResponse(
-      res,
-      ok,
-      token,
-      "You have logged in successfully",
-      user
-    );
+    return successResponse(res, ok, token, "You have logged in successfully", {
+      user: user,
+    });
   } catch (error) {
     console.log(error);
     return errorResponse(
