@@ -7,6 +7,7 @@ const { missingFields } = require("../utils/customMessage");
 
 const createNewPost = async (req, res) => {
   const { title, body, pic } = req.body;
+
   if (!validateRequiredFields([body, title, pic]))
     return errorResponse(res, unprocessableEntity, missingFields);
   console.log(title, "here");
