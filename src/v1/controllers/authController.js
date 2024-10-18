@@ -1,27 +1,30 @@
-const nodemailer = require("nodemailer");
-const sendgridTransport = require("nodemailer-sendgrid-transport");
-const crypto = require("crypto");
+import { createTransport } from "nodemailer";
+import sendgridTransport from "nodemailer-sendgrid-transport";
+import { randomBytes } from "crypto";
 
-const { errorResponse, successResponse } = require("../utils/responses");
-const { hashPassword, comparePassword, generateToken, validateRequiredFields } =
-  require("../utils/helpers").default;
-const userService = require("../services/userService");
-const {
+import { errorResponse, successResponse } from "../utils/responses.js";
+import {
+  hashPassword,
+  comparePassword,
+  generateToken,
+  validateRequiredFields,
+} from "../utils/helpers.js";
+import userService from "../services/userService.js";
+import {
   ok,
   created,
   unprocessableEntity,
   serverError,
-} = require("../utils/statusCode");
-const {
+} from "../utils/statusCode.js";
+import {
   emailExist,
   signedup,
   missingFields,
   authError,
   emailAssociate,
-} = require("../utils/customMessage");
-const { console } = require("inspector");
+} from "../utils/customMessage.js";
 
-const transporter = nodemailer.createTransport(
+const transporter = createTransport(
   sendgridTransport({
     auth: {
       api_key: process.env.SENDGRID_API_KEY,
@@ -36,7 +39,7 @@ const login = async (req, res) => {
     return errorResponse(res, unprocessableEntity, missingFields);
 
   try {
-    const user = await userService.getOneUser({ email: email });
+    const user = await userService.userService.getOneUser({ email: email });
 
     if (!user || !comparePassword(password, user.password))
       return errorResponse(res, unprocessableEntity, authError);
@@ -95,12 +98,12 @@ const resetPassword = async (req, res) => {
     const user = await userService.getOneUser({ email: email });
     if (!user) return errorResponse(res, unprocessableEntity, emailAssociate);
 
-    const token = crypto.randomBytes(32).toString("hex");
+    const token = randomBytes(32).toString("hex");
     user.resetToken = token;
     user.expireToken = Date.now() + 3600000;
     await userService.updateOneUser(user);
 
-    await transporter.sendMail({
+    await userService.transporter.sendMail({
       to: user.email,
       from: process.env.EMAIL_SENDER,
       subject: "Signup",
@@ -146,7 +149,7 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   login,
   newPassword,
   resetPassword,

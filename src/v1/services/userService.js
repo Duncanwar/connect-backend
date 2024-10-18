@@ -1,4 +1,4 @@
-const UserModel = require("../models/User");
+import UserModel from "../models/User.js";
 
 const createNewUser = async (...userData) => {
   return await UserModel.create(userData);
@@ -16,7 +16,7 @@ const updateOneUser = async (...userData) => {
   return await UserModel.save(userData);
 };
 
-module.exports = {
+export default {
   createNewUser,
   deleteOneUser,
   getOneUser,
