@@ -1,5 +1,7 @@
 import { Router } from "express";
-require("dotenv").config();
+import { config } from "dotenv";
+
+config();
 
 import authController from "../controllers/authController.js";
 import tokenAuthentication from "../middleware/tokenAuthentication.js";

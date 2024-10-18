@@ -4,7 +4,7 @@ const router = Router();
 import postController from "../controllers/postController.js";
 import tokenAuthentication from "../middleware/tokenAuthentication.js";
 
-router.get("/", getAllPosts);
+router.get("/", postController.getAllPosts);
 
 router.post("/", tokenAuthentication, postController.createNewPost);
 

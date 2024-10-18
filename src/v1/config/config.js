@@ -1,4 +1,6 @@
-require("dotenv").config();
+import { config } from "dotenv";
+
+config();
 const { env } = process;
 module.exports = {
   name: env.APP_NAME,

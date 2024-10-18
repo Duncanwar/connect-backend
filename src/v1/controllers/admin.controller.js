@@ -1,5 +1,7 @@
 const adminService = require("../services/admin.service");
-require("dotenv").config();
+import { config } from "dotenv";
+
+config();
 
 const { create, findAll } = adminService;
 

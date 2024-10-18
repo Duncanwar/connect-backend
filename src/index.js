@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import { urlencoded, json } from "body-parser";
+import bodyParser from "body-parser";
 
 import "./v1/config/dbConfig.js";
 import v1PostRouter from "./v1/routes/postRoutes.js";
@@ -9,8 +9,8 @@ import v1AuthRouter from "./v1/routes/authRoutes.js";
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-app.use(urlencoded({ extended: true }));
-app.use(json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/api/v1", v1AuthRouter);

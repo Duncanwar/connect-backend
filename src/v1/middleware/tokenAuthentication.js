@@ -1,5 +1,7 @@
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
+import jwt from "jsonwebtoken";
+import { config } from "dotenv";
+
+config();
 
 export default (req, res, next) => {
   const { authorization } = req.headers;

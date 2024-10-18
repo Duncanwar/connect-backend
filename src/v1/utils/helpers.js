@@ -1,6 +1,8 @@
 import { compare, hashSync } from "bcrypt";
 import jwt from "jsonwebtoken";
-require("dotenv").config();
+import { config } from "dotenv";
+
+config();
 
 //Generic Error Handling wrapper
 const catchAsyncErrors = (fn) => async (req, res, next) => {
