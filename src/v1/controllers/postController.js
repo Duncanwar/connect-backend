@@ -1,142 +1,91 @@
-const postService = require("../services/postService");
-const { validateRequiredFields } = require("../utils/helpers");
-const {
+import postService from "../services/postService.js";
+import { catchAsyncErrors, validateRequiredFields } from "../utils/helpers.js";
+import {
   errorResponse,
   successResponse,
   retrieveResponse,
-} = require("../utils/responses");
-const { unprocessableEntity, serverError, ok } = require("../utils/statusCode");
-const { missingFields } = require("../utils/customMessage");
+} from "../utils/responses.js";
+import { unprocessableEntity, ok } from "../utils/statusCode.js";
+import { missingFields } from "../utils/customMessage.js";
 
-const createNewPost = async (req, res) => {
+const createNewPost = catchAsyncErrors(async (req, res) => {
   const { title, body, pic } = req.body;
 
   if (!validateRequiredFields([body, title, pic]))
     return errorResponse(res, unprocessableEntity, missingFields);
+  const post = await postService.createNewPost({
+    photo: pic,
+    postedBy: req.user,
+    ...req.body,
+  });
 
-  try {
-    const post = await postService.createNewPost({
-      photo: pic,
-      postedBy: req.user,
-      ...req.body,
-    });
-    req.user.password = undefined;
+  return successResponse(res, 201, undefined, "Created New Post", post);
+});
 
-    return successResponse(res, 201, undefined, "Created New Post", post);
-  } catch (error) {
-    console.error(error);
-    return errorResponse(res, serverError, error);
-  }
-};
-
-const deleteOnePost = async (req, res) => {
+const deleteOnePost = catchAsyncErrors(async (req, res) => {
   const { postId } = req.params;
 
   if (!validateRequiredFields([postId]))
     return errorResponse(res, unprocessableEntity, missingFields);
 
-  try {
-    const post = await postService.getOnePost({
-      _id: postId,
-    });
-    if (!post)
-      return errorResponse(
-        res,
-        unprocessableEntity,
-        "the post is not available"
-      );
-    if (post.postedBy._id.toString() !== req.user._id.toString())
-      return errorResponse(
-        res,
-        unprocessableEntity,
-        "the post is not available for delete"
-      );
-    const result = await postService.deleteOnePost({ _id: postId });
-    return successResponse(res, ok, null, "deleted post", result);
-  } catch (error) {
-    console.error("Error deleting post:", error);
-    return errorResponse(res, serverError, "Internal Server Error");
-  }
-};
+  const post = await getOnePost({
+    _id: postId,
+  });
 
-const getAllFollowingPost = async (req, res) => {
-  try {
-    const followPost = await postService.getAllFollowingPost({
-      postedBy: { $in: req.user.following },
-    });
-    return successResponse(res, ok, followPost);
-  } catch (error) {
-    console.error("Error getting the post I follow:", error);
-    return errorResponse(res, serverError, "Internal Server Error");
-  }
-};
+  if (!post)
+    return errorResponse(res, unprocessableEntity, "The post is not available");
 
-const getAllPosts = async (req, res) => {
-  try {
-    const allPosts = await postService.getAllPosts();
-    return retrieveResponse(res, ok, allPosts);
-  } catch (error) {
-    console.error("Error getting my posts post:", error);
-    return errorResponse(res, serverError, "Internal Server Error");
-  }
-};
+  if (post.postedBy.id.toString() !== req.user.id.toString())
+    return errorResponse(
+      res,
+      unprocessableEntity,
+      "You are not authorized to delete this post"
+    );
 
-const getMyPosts = async (req, res) => {
-  try {
-    const myposts = await postService.getMyPosts({ postedBy: req.user._id });
-    return retrieveResponse(res, ok, myposts);
-  } catch (error) {
-    console.error("Error getting my posts post:", error);
-    return errorResponse(res, serverError, "Internal Server Error");
-  }
-};
+  const result = await postService.deleteOnePost({ _id: postId });
+  return successResponse(res, ok, null, "Deleted post", result);
+});
 
-const likePost = async (req, res) => {
+const getAllFollowingPost = catchAsyncErrors(async (req, res) => {
+  const followPost = await postService.getAllFollowingPost({
+    postedBy: { $in: req.user.following },
+  });
+  return successResponse(res, ok, followPost);
+});
+
+const getAllPosts = catchAsyncErrors(async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const allPosts = await postService.getAllPosts(page, limit);
+  return retrieveResponse(res, ok, allPosts);
+});
+
+const getMyPosts = catchAsyncErrors(async (req, res) => {
+  const myposts = await postService.getMyPosts({ postedBy: req.user.id });
+  return retrieveResponse(res, ok, myposts);
+});
+
+const likePost = catchAsyncErrors(async (req, res) => {
   const { postId } = req.body;
-  try {
-    const liked = await postService.updateOnePostLike(postId, req.user._id);
-    console.log(liked);
-    return retrieveResponse(res, ok, liked);
-  } catch (error) {
-    console.error("Liking Post Failed", error);
-    return errorResponse(res, serverError, "Internal Server Error");
-  }
-};
+  const liked = await updateOnePostLike(postId, req.user.id);
+  return retrieveResponse(res, ok, liked);
+});
 
-const unLikePost = async (req, res) => {
+const unLikePost = catchAsyncErrors(async (req, res) => {
   const { postId } = req.body;
-  try {
-    const unLiked = await postService.updateOnePostUnLike(postId, req.user._id);
-    return retrieveResponse(res, ok, unLiked);
-  } catch (error) {
-    console.error("UnLiking Post Failed", error);
-    return errorResponse(res, serverError, "Internal Server Error");
-  }
-};
+  const unLiked = await updateOnePostUnLike(postId, req.user.id);
+  return retrieveResponse(res, ok, unLiked);
+});
 
-const updateOnePostWithComment = async (req, res) => {
-  const comment = { text: req.body.text, postedBy: req.user._id };
-  Post.findByIdAndUpdate(
+const updateOnePostWithComment = catchAsyncErrors(async (req, res) => {
+  const comment = { text: req.body.text, postedBy: req.user.postService.id };
+  const postComment = await postService.updateOnePostWithComment(
     req.body.postId,
-    {
-      $push: { comments: comment },
-    },
-    {
-      new: true,
-    }
-  )
-    .populate("comments.postedBy", "_id name")
-    .populate("postedBy", "_id name")
-    .exec((err, result) => {
-      if (err) {
-        return res.status(422).json({ error: err });
-      } else {
-        res.json(result);
-      }
-    });
-};
+    comment
+  );
+  return retrieveResponse(res, ok, postComment);
+});
 
-module.exports = {
+export default {
   createNewPost,
   deleteOnePost,
   getAllFollowingPost,

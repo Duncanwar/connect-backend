@@ -1,11 +1,9 @@
-module.exports = {
-  ok: 200,
-  created: 201,
-  badRequest: 400,
-  unAuthorized: 401,
-  forbidden: 403,
-  notFound: 404,
-  conflict: 409,
-  unprocessableEntity: 422,
-  serverError: 500,
-};
+export const ok = 200;
+export const created = 201;
+export const badRequest = 400;
+export const unAuthorized = 401;
+export const forbidden = 403;
+export const notFound = 404;
+export const conflict = 409;
+export const unprocessableEntity = 422;
+export const serverError = 500;

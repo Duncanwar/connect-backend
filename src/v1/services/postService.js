@@ -1,4 +1,4 @@
-const PostModel = require("../models/post");
+import PostModel from "../models/post.js";
 
 const createNewPost = async (post) => {
   return await PostModel.create(post);
@@ -61,7 +61,21 @@ const updateOnePostUnLike = async (postId, userId) => {
     .populate("comments.postedBy", "_id name");
 };
 
-module.exports = {
+const updateOnePostWithComment = async (postId, ...comment) => {
+  await PostModel.findByIdAndUpdate(
+    postId,
+    {
+      $push: { comments: comment },
+    },
+    {
+      new: true,
+    }
+  )
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name");
+};
+
+export default {
   createNewPost,
   deleteOnePost,
   getAllPosts,
@@ -70,4 +84,5 @@ module.exports = {
   getOnePost,
   updateOnePostLike,
   updateOnePostUnLike,
+  updateOnePostWithComment,
 };

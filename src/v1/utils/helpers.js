@@ -1,10 +1,20 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import { compare, hashSync } from "bcrypt";
+import jwt from "jsonwebtoken";
 require("dotenv").config();
+
+//Generic Error Handling wrapper
+const catchAsyncErrors = (fn) => async (req, res, next) => {
+  try {
+    await fn(req, res, next);
+  } catch (error) {
+    console.error("Error:", error);
+    return errorResponse(res, serverError, "Internal Server Error");
+  }
+};
 
 const comparePassword = async (inputPassword, storedPassword) => {
   try {
-    return await bcrypt.compare(inputPassword, storedPassword);
+    return await compare(inputPassword, storedPassword);
   } catch (error) {
     console.error("Error comparing password", error);
     throw new Error("Password comparison failed");
@@ -17,7 +27,7 @@ const generateToken = (user, expiresIn = "8h") => {
 
 const hashPassword = async (password) => {
   try {
-    return bcrypt.hashSync(password, 15);
+    return hashSync(password, 15);
   } catch (error) {
     console.error("Error hashing password", error);
     throw new Error("Password hashing failed");
@@ -28,7 +38,8 @@ const validateRequiredFields = (fields) => {
   return fields.every((field) => !!field);
 };
 
-module.exports = {
+export {
+  catchAsyncErrors,
   comparePassword,
   generateToken,
   hashPassword,

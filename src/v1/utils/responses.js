@@ -54,9 +54,4 @@ const retrieveResponse = (res, code, data = null) => {
   });
 };
 
-module.exports = {
-  successResponse,
-  errorResponse,
-  updateResponse,
-  retrieveResponse,
-};
+export { successResponse, errorResponse, updateResponse, retrieveResponse };

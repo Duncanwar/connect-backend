@@ -1,24 +1,24 @@
-module.exports = {
-  signedup: "You signed up successfully",
-  duplicateEmail: "This account with this email already exist",
-  logout: "You loged out successfully",
-  loged: "You aleady Logged Out",
-  login: "Please Login",
-  duplicateUsername: "This Username is in use",
-  emailConfirmation: "A verification email has been sent to ",
-  accountVerified: "The account has been verified. Please log in.",
-  userVerification: "This user has already been verified.",
-  emailAssociate: "we are unable to find a user with that email!",
-  thisAccountVerified: "This account has  already been verified.Please log In",
-  noEmailAssociate: "no account associated to this email",
-  passwordReset: "The link to reset password sent succesfully to your email!",
-  passwordMatch: "password don't match",
-  passwordUpdated: "password updated succesfully!",
-  resend: "confirmation email resend succesfully!",
-  onCreate: "Request submitted",
-  onUpdate: "Request updated!",
-  onDelete: "Request deleted",
-  emailExist: "User already exists with that email",
-  missingFields: "Please Fill on all the fields",
-  authError: "Invalid Email or password",
-};
+export const signedup = "You signed up successfully";
+export const duplicateEmail = "This account with this email already exist";
+export const logout = "You loged out successfully";
+export const loged = "You aleady Logged Out";
+export const login = "Please Login";
+export const duplicateUsername = "This Username is in use";
+export const emailConfirmation = "A verification email has been sent to ";
+export const accountVerified = "The account has been verified. Please log in.";
+export const userVerification = "This user has already been verified.";
+export const emailAssociate = "we are unable to find a user with that email!";
+export const thisAccountVerified =
+  "This account has  already been verified.Please log In";
+export const noEmailAssociate = "no account associated to this email";
+export const passwordReset =
+  "The link to reset password sent succesfully to your email!";
+export const passwordMatch = "password don't match";
+export const passwordUpdated = "password updated succesfully!";
+export const resend = "confirmation email resend succesfully!";
+export const onCreate = "Request submitted";
+export const onUpdate = "Request updated!";
+export const onDelete = "Request deleted";
+export const emailExist = "User already exists with that email";
+export const missingFields = "Please Fill on all the fields";
+export const authError = "Invalid Email or password";

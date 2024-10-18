@@ -3,12 +3,8 @@ const sendgridTransport = require("nodemailer-sendgrid-transport");
 const crypto = require("crypto");
 
 const { errorResponse, successResponse } = require("../utils/responses");
-const {
-  hashPassword,
-  comparePassword,
-  generateToken,
-  validateRequiredFields,
-} = require("../utils/helpers");
+const { hashPassword, comparePassword, generateToken, validateRequiredFields } =
+  require("../utils/helpers").default;
 const userService = require("../services/userService");
 const {
   ok,

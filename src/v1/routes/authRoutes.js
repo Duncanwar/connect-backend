@@ -1,20 +1,26 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
 require("dotenv").config();
 
-const authController = require("../controllers/authController");
-const requireLogin = require("../middleware/requireLogin");
+import {
+  signup,
+  login,
+  resetPassword,
+  newPassword,
+} from "../controllers/authController.js";
+import tokenAuthentication from "../middleware/tokenAuthentication.js";
 
-router.get("/protected", requireLogin, (req, res) => {
+const router = Router();
+
+router.get("/protected", tokenAuthentication, (req, res) => {
   res.send("hello user");
 });
 
-router.post("/signup", authController.signup);
+router.post("/signup", signup);
 
-router.post("/login", authController.login);
+router.post("/login", login);
 
-router.post("/reset-password", authController.resetPassword);
+router.post("/reset-password", resetPassword);
 
-router.post("/new-password", authController.newPassword);
+router.post("/new-password", newPassword);
 
-module.exports = router;
+export default router;

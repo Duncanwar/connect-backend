@@ -1,28 +1,31 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
-const Post = require("../models/post");
-const postControllers = require("../controllers/postController");
-const requiredLogin = require("../middleware/requireLogin");
+import postController from "../controllers/postController.js";
+import tokenAuthentication from "../middleware/tokenAuthentication.js";
 
-router.get("/", postControllers.getAllPosts);
+router.get("/", getAllPosts);
 
-router.post("/", requiredLogin, postControllers.createNewPost);
+router.post("/", tokenAuthentication, postController.createNewPost);
 
-router.delete("/:postId", requiredLogin, postControllers.deleteOnePost);
+router.delete("/:postId", tokenAuthentication, postController.deleteOnePost);
 
 router.get(
   "/followingpost",
-  requiredLogin,
-  postControllers.getAllFollowingPost
+  tokenAuthentication,
+  postController.getAllFollowingPost
 );
 
-router.get("/myposts", requiredLogin, postControllers.getMyPosts);
+router.get("/myposts", tokenAuthentication, postController.getMyPosts);
 
-router.put("/unlike", requiredLogin, postControllers.unLikePost);
+router.put("/unlike", tokenAuthentication, postController.unLikePost);
 
-router.put("/like", requiredLogin, postControllers.likePost);
+router.put("/like", tokenAuthentication, postController.likePost);
 
-router.put("/comment", requiredLogin, postControllers.updateOnePostWithComment);
+router.put(
+  "/comment",
+  tokenAuthentication,
+  postController.updateOnePostWithComment
+);
 
-module.exports = router;
+export default router;
