@@ -29,7 +29,7 @@ const generateToken = (user, expiresIn = "8h") => {
 
 const hashPassword = async (password) => {
   try {
-    return hashSync(password, 15);
+    return await hashSync(password, 15);
   } catch (error) {
     console.error("Error hashing password", error);
     throw new Error("Password hashing failed");

@@ -9,6 +9,7 @@ const deleteOneUser = async (id) => {
 };
 
 const getOneUser = async (data) => {
+  console.log(data);
   return await UserModel.findOne(data);
 };
 

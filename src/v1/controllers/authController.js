@@ -39,7 +39,7 @@ const login = async (req, res) => {
     return errorResponse(res, unprocessableEntity, missingFields);
 
   try {
-    const user = await userService.userService.getOneUser({ email: email });
+    const user = await userService.getOneUser({ email: email });
 
     if (!user || !comparePassword(password, user.password))
       return errorResponse(res, unprocessableEntity, authError);
@@ -127,7 +127,7 @@ const resetPassword = async (req, res) => {
 const signup = async (req, res) => {
   const { name, email, password, pic } = req.body;
 
-  if (!validateRequiredFields([email]))
+  if (!validateRequiredFields([name, email, password, pic]))
     return errorResponse(res, unprocessableEntity, missingFields);
 
   try {
