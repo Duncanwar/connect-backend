@@ -1,15 +1,16 @@
-const express = require("express");
-const router = express.Router();
-const requiredLogin = require("../middleware/requireLogin");
-const Post = require("../models/post");
-const User = require("../models/User");
-const admin = require("../middleware/admin.middleware");
-const userController = require("../controllers/userController");
+import { Router } from "express";
+import tokenAuthentication from "../middleware/tokenAuthentication.js";
+import Post from "../models/post.js";
+import User from "../models/User.js";
 
-const { checkPassword, checkEmail } = admin;
-const { deleteUser } = userController;
+const router = Router();
+// import admin from "../middleware/admin.middleware";
+// import userController from "../controllers/userController";
 
-router.get("/user/:id", requiredLogin, (req, res) => {
+// const { checkPassword, checkEmail } = admin;
+// const { deleteUser } = userController;
+
+router.get("/user/:id", tokenAuthentication, (req, res) => {
   User.findOne({ _id: req.params.id })
     .select("-password")
     .then((user) => {
@@ -27,7 +28,7 @@ router.get("/user/:id", requiredLogin, (req, res) => {
     });
 });
 
-router.put("/follow", requiredLogin, (req, res) => {
+router.put("/follow", tokenAuthentication, (req, res) => {
   User.findByIdAndUpdate(
     req.body.followId,
     {
@@ -38,7 +39,7 @@ router.put("/follow", requiredLogin, (req, res) => {
       if (err) {
         return res.status(422).json({ error: "Follow not found" });
       }
-      User.findByIdAndUpdate(
+      findByIdAndUpdate(
         req.user._id,
         {
           $push: { following: req.body.followId },
@@ -56,7 +57,7 @@ router.put("/follow", requiredLogin, (req, res) => {
   );
 });
 
-router.put("/unfollow", requiredLogin, (req, res) => {
+router.put("/unfollow", tokenAuthentication, (req, res) => {
   User.findByIdAndUpdate(
     req.body.unfollowId,
     {
@@ -85,7 +86,7 @@ router.put("/unfollow", requiredLogin, (req, res) => {
   );
 });
 
-router.put("/updatepic", requiredLogin, (req, res) => {
+router.put("/updatepic", tokenAuthentication, (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     {
@@ -97,6 +98,7 @@ router.put("/updatepic", requiredLogin, (req, res) => {
         return res.status(422).json({ error: "pic cannot be posted" });
       } else {
         res.json(result);
+        console.log(result);
       }
     }
   );
@@ -131,4 +133,4 @@ router.get(
 
 //router.delete('/user', [checkPassword,checkEmail,requireLogin], deleteUser)
 
-module.exports = router;
+export default router;

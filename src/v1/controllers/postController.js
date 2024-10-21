@@ -60,7 +60,7 @@ const getAllPosts = catchAsyncErrors(async (req, res) => {
 });
 
 const getMyPosts = catchAsyncErrors(async (req, res) => {
-  const myposts = await postService.getMyPosts({ postedBy: req.user.id });
+  const myposts = await postService.getMyPosts({ postedBy: req.user._id });
   return retrieveResponse(res, ok, myposts);
 });
 

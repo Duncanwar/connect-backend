@@ -49,7 +49,7 @@ const login = async (req, res) => {
       user: user,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return errorResponse(
       res,
       serverError,
@@ -119,7 +119,7 @@ const resetPassword = async (req, res) => {
       "Check your email for password reset link."
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return errorResponse(res, serverError, "Internal Server Error");
   }
 };
