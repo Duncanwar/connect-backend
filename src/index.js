@@ -12,8 +12,6 @@ app.use(express.json());
 app.use(cors());
 app.use("/api/v1", route);
 
-app.get("/", (req, res) => res.json({ message: "done" }));
-
 app.listen(PORT, () => {
   console.log("server is running on,PORT", PORT);
 });
