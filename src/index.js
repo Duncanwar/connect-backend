@@ -1,7 +1,7 @@
 import cors from "cors";
 import express from "express";
 
-import "./v1/config/dbConfig.ts";
+import "./v1/config/dbConfig.js";
 import route from "./v1/routes/index.js";
 
 const app = express();
